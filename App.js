@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -28,13 +28,15 @@ const theme = {
 
 export default function App() {
 
-  const apiKey = "64cb32446a65379eb254418bede05f06"
-  const url = "http://api.openweathermap.org/data/2.5/weather?lat=48.85&lon=2.35&units=metric&appid={apiKey}";
+
+
+
+
+
   return (
-                  <PaperProvider theme={theme}>
+    <PaperProvider theme={theme}>
       <StatusBar backgroundColor="#000" barStyle="light-content" />
-      
-    <Weather  />
+    <Weather />
     </PaperProvider>
   );
 }

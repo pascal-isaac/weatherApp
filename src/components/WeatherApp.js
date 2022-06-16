@@ -1,100 +1,142 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, ScrollView, Image, ImageBackground } from 'react-native';
 import Icon from 'react-native-vector-icons/weatherIcon'
 
 import { Searchbar } from 'react-native-paper';
+import moment from 'moment-timezone';
 
-export default function Weather({ lat, lon }) {
+import axios from 'axios';
+import { REACT_APP_OPEN_WEATHER_KEY } from '@env'
+
+
+export default function Weather() {
+
+    const cityName = `Fécamp`
+    const [Data, setData] = useState([]);
+    const [city, setCity] = useState(Data.name);
+    const data = async () => {
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&lang=fr&appid=${REACT_APP_OPEN_WEATHER_KEY}`);
+        const json = await response.json();
+        console.log("Response du json", json);
+        return json;
+    }
+
+    const datainit = async () => {
+        await data().then(data => {
+            setData(data);
+            console.log(data);
+        }
+        ).catch(error => {
+            console.log(error);
+
+        }
+        )
+    }
+
+    useEffect(() => {
+        datainit();
+    }
+        , [])
+
     return (
         <View style={{ backgroundColor: "#000", flex: 1 }}>
-            <Text style={styles.city}>Fécamp, France</Text>
-            <Searchbar iconColor="#FFCA7C" placeholderTextColor="#b5c0d1" style={styles.searchbar} placeholder='Entrer le nom d&apos;une ville' />
+            <Text style={styles.city}>{Data.name}</Text>
+            <Searchbar iconColor="#FFCA7C" onChangeText={text => setCity(value)} value={city} placeholderTextColor="#b5c0d1" style={styles.searchbar} placeholder='Entrer le nom d&apos;une ville' />
             <ScrollView tyle={styles.scroll}>
                 <ImageBackground style={{ height: 255, width: '100%', alignSelf: 'center' }} source={require('../images/map.png')}>
-                    <View>
-                        <Image style={styles.icon} source={{ uri: `http://openweathermap.org/img/wn/02d@2x.png` }} />
+                    {(typeof (Data.coord) != "undefined") &&
                         <View>
-                            <Text style={styles.temp}>22°C</Text>
+                            <Image style={styles.icon} source={{ uri: `http://openweathermap.org/img/wn/${Data.weather[0].icon}@2x.png` }} />
+                            <View>
+                                <Text style={styles.temp}>{Data.main.temp}°C</Text>
+                            </View>
+                            <View>
+                                <Text style={styles.description}> {Data.weather[0].description}</Text>
+                            </View>
                         </View>
-                        <View>
-                            <Text style={styles.description}> Fé bo avec d nuage</Text>
-                        </View>
-                    </View>
+                    }
                 </ImageBackground>
+                {(typeof (Data.coord) != "undefined") &&
+                    <View style={styles.temp_sun}>
 
-                <View style={styles.temp_sun}>
-                    <View style={styles.max_min}>
-                        <Text style={styles.itemTitle}>Min 10°C</Text>
-                        <Text style={styles.itemTitle}>Max 25°C</Text>
+                        <View style={styles.max_min}>
+                            <Text style={styles.itemTitle}>Min {Data.main.temp_min}°C</Text>
+                            <Text style={styles.itemTitle}>Max {Data.main.temp_max}°C</Text>
+                        </View>
+                        <View style={styles.sunIcon}>
+                            <Icon name="wi-sunrise" size={50} color='#FFCA7C' />
+                            <Icon name="wi-sunset" size={50} color='#FAD6A5' />
+                        </View>
+                        <View style={styles.sun}>
+                            <Text style={styles.itemTitle}>Lever du soleil à {moment.unix(Data.sys.sunrise).format('HH:mm')}</Text>
+                            <Text style={styles.itemTitle}>Coucher du soleil à {moment.unix(Data.sys.sunset).format('HH:mm')}</Text>
+                        </View>
                     </View>
-                    <View style={styles.sunIcon}>
-                        <Icon name="wi-sunrise" size={50} color='#FFCA7C' />
-                        <Icon name="wi-sunset" size={50} color='#FAD6A5' />
-                    </View>
-                    <View style={styles.sun}>
-                        <Text style={styles.itemTitle}>Lever du soleil à 05:50</Text>
-                        <Text style={styles.itemTitle}>Coucher du soleil à 22:08</Text>
-                    </View>
-                </View>
-
-                <View style={styles.weatherDetails}>
-                    <View style={styles.detailsCol}>
-                        <View style={styles.detailsRow}>
-                            <View style={styles.detailsBox}>
-                                <Icon name="wi-thermometer-exterior" size={45} color='#FFCA7C' />
-                                <View style={styles.item}>
-                                    <Text style={styles.itemTitle}>Sensation réel</Text>
-                                    <Text style={styles.item}>18 °C</Text>
+                }
+                {(typeof (Data.coord) != "undefined") &&
+                    <View style={styles.weatherDetails}>
+                        <View style={styles.detailsCol}>
+                            <View style={styles.detailsRow}>
+                                <View style={styles.detailsBox}>
+                                    <Icon name="wi-thermometer-exterior" size={45} color='#FFCA7C' />
+                                    <View style={styles.item}>
+                                        <Text style={styles.itemTitle}>Sensation réel</Text>
+                                        <Text style={styles.item}>{Data.main.feels_like} °C</Text>
+                                    </View>
                                 </View>
-                            </View>
-                            <View style={styles.detailsBox}>
-                                <Icon name="wi-cloudy" size={45} color='#FFCA7C' />
-                                <View style={styles.item}>
-                                    <Text style={styles.itemTitle}>Vitesse du vent</Text>
-                                    <Text style={styles.item}>13,2 km/h</Text>
+                                <View style={styles.detailsBox}>
+                                    <Icon name="wi-cloudy" size={45} color='#FFCA7C' />
+                                    <View style={styles.item}>
+                                        <Text style={styles.itemTitle}>Vitesse du vent</Text>
+                                        <Text style={styles.item}>{Data.wind.speed} km/h</Text>
+                                    </View>
                                 </View>
                             </View>
                         </View>
-                    </View>
 
-                    <View style={styles.detailsCol}>
-                        <View style={styles.detailsRow}>
-                            <View style={styles.detailsBox}>
-                                <Icon name="wi-humidity" size={45} color='#FFCA7C' />
-                                <View style={styles.item}>
-                                    <Text style={styles.itemTitle}>Humidité</Text>
-                                    <Text style={styles.item}>80 %</Text>
+                        <View style={styles.detailsCol}>
+                            <View style={styles.detailsRow}>
+                                <View style={styles.detailsBox}>
+                                    <Icon name="wi-humidity" size={45} color='#FFCA7C' />
+                                    <View style={styles.item}>
+                                        <Text style={styles.itemTitle}>Humidité</Text>
+                                        <Text style={styles.item}>{Data.main.humidity} %</Text>
+                                    </View>
                                 </View>
-                            </View>
-                            <View style={styles.detailsBox}>
-                                <Icon name="wi-barometer" size={45} color='#FFCA7C' />
-                                <View style={styles.item}>
-                                    <Text style={styles.itemTitle}>Pression</Text>
-                                    <Text style={styles.item}>1000 mBar</Text>
+                                <View style={styles.detailsBox}>
+                                    <Icon name="wi-barometer" size={45} color='#FFCA7C' />
+                                    <View style={styles.item}>
+                                        <Text style={styles.itemTitle}>Pression</Text>
+                                        <Text style={styles.item}>{Data.main.pressure} mBar</Text>
+                                    </View>
                                 </View>
                             </View>
                         </View>
-                    </View>
 
-                    <View style={styles.detailsCol}>
-                        <View style={styles.detailsRow}>
-                            <View style={styles.detailsBox}>
-                                <Icon name="wi-raindrop" size={45} color='#FFCA7C' />
-                                <View style={styles.item}>
-                                    <Text style={styles.itemTitle}>Risque de pluie</Text>
-                                    <Text style={styles.item}>0 %</Text>
+                        <View style={styles.detailsCol}>
+                            <View style={styles.detailsRow}>
+                                <View style={styles.detailsBox}>
+                                    <Icon name="wi-flood" size={45} color='#FFCA7C' />
+                                    <View style={styles.item}>
+                                        <Text style={styles.itemTitle}>Niveau du sol</Text>
+                                        <Text style={styles.item}>{Data.main.grnd_level} </Text>
+                                    </View>
                                 </View>
-                            </View>
-                            <View style={styles.detailsBox}>
-                                <Icon name="wi-fire" size={45} color='#FFCA7C' />
-                                <View style={styles.item}>
-                                    <Text style={styles.itemTitle}>Indice UV</Text>
-                                    <Text style={styles.item}>5</Text>
+                                <View style={styles.detailsBox}>
+                                    <Icon name="wi-tsunami" size={45} color='#FFCA7C' />
+                                    <View style={styles.item}>
+                                        <Text style={styles.itemTitle}>Niveau de la mer</Text>
+                                        <Text style={styles.item}>{Data.main.sea_level}</Text>
+                                    </View>
                                 </View>
                             </View>
                         </View>
+                    </View>}
+                {(typeof (Data.coord) != "undefined") &&
+                    <View style={styles.last}>
+                        <Text style={styles.item}> <Text style={styles.itemTitle}>Dernier relevé </Text>{moment.unix(Data.dt).format('dddd DD MMMM YYYY HH:mm')} </Text>
                     </View>
-                </View>
+                }
             </ScrollView>
         </View>
     );
@@ -108,8 +150,13 @@ const styles = StyleSheet.create({
         //borderColor: 'lightgray',
         //borderRadius: 10,
         margin: 5,
-        padding: 10,
+        padding: 8,
         flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    last: {
+
         alignItems: 'center',
         justifyContent: 'space-between',
     },
@@ -134,9 +181,10 @@ const styles = StyleSheet.create({
     },
     weatherDetails: {
         backgroundColor: '#293d46',
-        padding: 5,
+        paddingHorizontal: 10,
+        paddingVertical: 3,
         borderRadius: 20,
-        marginBottom: 50,
+        marginBottom: 10,
         marginHorizontal: 10,
         shadowColor: 'lightgray',
         shadowOffset: {
@@ -162,9 +210,10 @@ const styles = StyleSheet.create({
     },
     temp_sun: {
         backgroundColor: '#293d46',
-        padding: 14,
+        paddingHorizontal: 20,
+        paddingVertical: 11,
         borderRadius: 20,
-        marginBottom: 25,
+        marginBottom: 20,
         color: '#FFF',
         fontSize: 15,
         marginHorizontal: 10,
@@ -202,14 +251,6 @@ const styles = StyleSheet.create({
         height: 150,
         alignSelf: 'center'
     },
-    /*head: {
-        backgroundColor: '#191970',
-        width: '100%',
-        height: 50,
-        color: '#FFF',
-        textAlign: 'center',
-        fontSize: 30,
-    },*/
     scroll: {
         padding: 5,
     },
