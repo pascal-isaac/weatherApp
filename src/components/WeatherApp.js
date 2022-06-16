@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, ScrollView, Image, ImageBackground } from 'react-native';
 import Icon from 'react-native-vector-icons/weatherIcon'
 
-import { Searchbar } from 'react-native-paper';
+import { Searchbar, TextInput } from 'react-native-paper';
 import moment from 'moment-timezone';
 
 import axios from 'axios';
@@ -11,11 +11,11 @@ import { REACT_APP_OPEN_WEATHER_KEY } from '@env'
 
 export default function Weather() {
 
-    const cityName = `Fécamp`
+    //const cityName = `Fécamp`
     const [Data, setData] = useState([]);
-    const [city, setCity] = useState(Data.name);
+    const [city, setCity] = useState(`Fécamp`);
     const data = async () => {
-        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&lang=fr&appid=${REACT_APP_OPEN_WEATHER_KEY}`);
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&lang=fr&appid=${REACT_APP_OPEN_WEATHER_KEY}`);
         const json = await response.json();
         console.log("Response du json", json);
         return json;
@@ -26,11 +26,12 @@ export default function Weather() {
             setData(data);
             console.log(data);
         }
-        ).catch(error => {
+        )
+        .catch(error => {
             console.log(error);
-
         }
         )
+        //setCity('Rouen')
     }
 
     useEffect(() => {
@@ -41,7 +42,8 @@ export default function Weather() {
     return (
         <View style={{ backgroundColor: "#000", flex: 1 }}>
             <Text style={styles.city}>{Data.name}</Text>
-            <Searchbar iconColor="#FFCA7C" onChangeText={text => setCity(value)} value={city} placeholderTextColor="#b5c0d1" style={styles.searchbar} placeholder='Entrer le nom d&apos;une ville' />
+            <Searchbar iconColor="#FFCA7C" onChangeText={text => setCity(text)}  value={city}  onKeyPress={datainit} onBlur={() => datainit()}
+           placeholderTextColor="#b5c0d1" style={styles.searchbar} placeholder='Entrer le nom d&apos;une ville' />
             <ScrollView tyle={styles.scroll}>
                 <ImageBackground style={{ height: 255, width: '100%', alignSelf: 'center' }} source={require('../images/map.png')}>
                     {(typeof (Data.coord) != "undefined") &&
@@ -146,9 +148,6 @@ const styles = StyleSheet.create({
 
     detailsBox: {
         flex: 1,
-        //borderWidth: 2,
-        //borderColor: 'lightgray',
-        //borderRadius: 10,
         margin: 5,
         padding: 8,
         flexDirection: 'row',
