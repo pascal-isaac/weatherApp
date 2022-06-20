@@ -145,6 +145,17 @@ export default function Weather() {
     }
         , [themeWeather])
 
+    var myloop = [];
+    for (let i = 0; i < 10; i++) {
+        myloop.push(
+            <View style={{ flex: 1 }} key={i}>
+                <Text style={[styles.itemTitlePrev, { color: color }]}>{moment.unix(DataPrev.list?.[i].dt).format('HH:mm')}</Text>
+                <Image style={styles.iconPrev} source={{ uri: `http://openweathermap.org/img/wn/${DataPrev.list?.[i].weather?.[0].icon}@2x.png` }} />
+                <Text style={[styles.itemTitlePrev, { color: color }]}>{DataPrev.list?.[i].main.temp} °C</Text>
+                <Text style={[styles.itemTitlePrev, { color: color }]}>{DataPrev.list?.[i].wind.speed} km/h</Text>
+            </View>
+        );
+    }
 
     return (
         <View style={{ backgroundColor: backgroundColor, flex: 1 }}>
@@ -168,62 +179,8 @@ export default function Weather() {
                         </View>
                     </View>
                 </ImageBackground>
-
-                <ScrollView horizontal={true} style={{ flex: 1, flexDirection: 'row', marginVertical: 20}}>
-                        <View style={{flex: 1}}>
-                            <Text style={[styles.itemTitlePrev, { color: color }]}>{moment.unix(DataPrev.list?.[0].dt).format('HH:mm')}</Text>
-                            <Image style={styles.iconPrev} source={{ uri: `http://openweathermap.org/img/wn/${DataPrev.list?.[0].weather?.[0].icon}@2x.png` }} />
-                            <Text style={[styles.itemTitlePrev, { color: color }]}>{DataPrev.list?.[0].main.temp} °C</Text>                       
-                            <Text style={[styles.itemTitlePrev, { color: color }]}>{DataPrev.list?.[0].wind.speed} km/h</Text>      
-                        </View>
-                        <View style={{flex: 1}}>
-                            <Text style={[styles.itemTitlePrev, { color: color }]}>{moment.unix(DataPrev.list?.[1].dt).format('HH:mm')}</Text>
-                            <Image style={styles.iconPrev} source={{ uri: `http://openweathermap.org/img/wn/${DataPrev.list?.[1].weather?.[0].icon}@2x.png` }} />
-                            <Text style={[styles.itemTitlePrev, { color: color }]}>{DataPrev.list?.[1].main.temp} °C</Text>                       
-                            <Text style={[styles.itemTitlePrev, { color: color }]}>{DataPrev.list?.[1].wind.speed} km/h</Text>      
-                        </View>
-                        <View style={{flex: 1}}>
-                            <Text style={[styles.itemTitlePrev, { color: color }]}>{moment.unix(DataPrev.list?.[2].dt).format('HH:mm')}</Text>
-                            <Image style={styles.iconPrev} source={{ uri: `http://openweathermap.org/img/wn/${DataPrev.list?.[2].weather?.[0].icon}@2x.png` }} />
-                            <Text style={[styles.itemTitlePrev, { color: color }]}>{DataPrev.list?.[2].main.temp} °C</Text>                       
-                            <Text style={[styles.itemTitlePrev, { color: color }]}>{DataPrev.list?.[2].wind.speed} km/h</Text>      
-                        </View>
-                        <View style={{flex: 1}}>
-                            <Text style={[styles.itemTitlePrev, { color: color }]}>{moment.unix(DataPrev.list?.[3].dt).format('HH:mm')}</Text>
-                            <Image style={styles.iconPrev} source={{ uri: `http://openweathermap.org/img/wn/${DataPrev.list?.[3].weather?.[0].icon}@2x.png` }} />
-                            <Text style={[styles.itemTitlePrev, { color: color }]}>{DataPrev.list?.[3].main.temp} °C</Text>                       
-                            <Text style={[styles.itemTitlePrev, { color: color }]}>{DataPrev.list?.[3].wind.speed} km/h</Text>      
-                        </View>
-                        <View style={{flex: 1}}>
-                            <Text style={[styles.itemTitlePrev, { color: color }]}>{moment.unix(DataPrev.list?.[4].dt).format('HH:mm')}</Text>
-                            <Image style={styles.iconPrev} source={{ uri: `http://openweathermap.org/img/wn/${DataPrev.list?.[4].weather?.[0].icon}@2x.png` }} />
-                            <Text style={[styles.itemTitlePrev, { color: color }]}>{DataPrev.list?.[4].main.temp} °C</Text>                       
-                            <Text style={[styles.itemTitlePrev, { color: color }]}>{DataPrev.list?.[4].wind.speed} km/h</Text>      
-                        </View>
-                        <View style={{flex: 1}}>
-                            <Text style={[styles.itemTitlePrev, { color: color }]}>{moment.unix(DataPrev.list?.[7].dt).format('HH:mm')}</Text>
-                            <Image style={styles.iconPrev} source={{ uri: `http://openweathermap.org/img/wn/${DataPrev.list?.[5].weather?.[0].icon}@2x.png` }} />
-                            <Text style={[styles.itemTitlePrev, { color: color }]}>{DataPrev.list?.[5].main.temp} °C</Text>                       
-                            <Text style={[styles.itemTitlePrev, { color: color }]}>{DataPrev.list?.[5].wind.speed} km/h</Text>      
-                        </View>
-                        <View style={{flex: 1}}>
-                            <Text style={[styles.itemTitlePrev, { color: color }]}>{moment.unix(DataPrev.list?.[6].dt).format('HH:mm')}</Text>
-                            <Image style={styles.iconPrev} source={{ uri: `http://openweathermap.org/img/wn/${DataPrev.list?.[6].weather?.[0].icon}@2x.png` }} />
-                            <Text style={[styles.itemTitlePrev, { color: color }]}>{DataPrev.list?.[6].main.temp} °C</Text>                       
-                            <Text style={[styles.itemTitlePrev, { color: color }]}>{DataPrev.list?.[6].wind.speed} km/h</Text>      
-                        </View>
-                        <View style={{flex: 1}}>
-                            <Text style={[styles.itemTitlePrev, { color: color }]}>{moment.unix(DataPrev.list?.[7].dt).format('HH:mm')}</Text>
-                            <Image style={styles.iconPrev} source={{ uri: `http://openweathermap.org/img/wn/${DataPrev.list?.[7].weather?.[0].icon}@2x.png` }} />
-                            <Text style={[styles.itemTitlePrev, { color: color }]}>{DataPrev.list?.[7].main.temp} °C</Text>                       
-                            <Text style={[styles.itemTitlePrev, { color: color }]}>{DataPrev.list?.[7].wind.speed} km/h</Text>      
-                        </View>
-                        <View style={{flex: 1}}>
-                            <Text style={[styles.itemTitlePrev, { color: color }]}>{moment.unix(DataPrev.list?.[8].dt).format('HH:mm')}</Text>
-                            <Image style={styles.iconPrev} source={{ uri: `http://openweathermap.org/img/wn/${DataPrev.list?.[8].weather?.[0].icon}@2x.png` }} />
-                            <Text style={[styles.itemTitlePrev, { color: color }]}>{DataPrev.list?.[8].main.temp} °C</Text>                       
-                            <Text style={[styles.itemTitlePrev, { color: color }]}>{DataPrev.list?.[8].wind.speed} km/h</Text>      
-                        </View>
+                <ScrollView horizontal={true} style={{ flex: 1, flexDirection: 'row', marginVertical: 20 }}>
+                    {myloop}
                 </ScrollView>
 
 
@@ -243,7 +200,7 @@ export default function Weather() {
                     </View>
                 </View>
 
-                
+
 
                 <View style={[styles.weatherDetails, { backgroundColor: boxBackgroundColor }]}>
                     <View style={styles.detailsCol}>
